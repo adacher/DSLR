@@ -66,7 +66,6 @@ def main():
     np.apply_along_axis(scaling, 0, features)
     weights = get_weights()
     predictions = get_predictions(features, weights)
-    pd.DataFrame()
     pd.DataFrame(predictions, columns=['Hogwarts House']).to_csv(
         "predictions.csv")
     return 0

@@ -29,7 +29,7 @@ def cost_(X, h, nb_rows, unique):
 
 def fit_gradient_descent(X, houses):
     learning_rate = 0.01
-    iterations = 10000
+    iterations = 30000
     X = np.insert(X, 0, 1, axis=1)
     nb_rows, nb_features = X.shape
     predictions = []
