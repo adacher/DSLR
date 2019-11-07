@@ -83,7 +83,7 @@ def get_numeric_features(data):
     for feature in data:
         if feature != 'Hogwarts House':
             if data[feature].dtype != np.float64:
-                del data[feature]
+                del data[feature]  # supprime directement l'original ...
     return data
 
 

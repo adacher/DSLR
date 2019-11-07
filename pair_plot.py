@@ -29,11 +29,11 @@ def display(data, color, names):
                              values=data[names[9]])],
             marker=dict(color=color, size=5),
         ))
-        fig.update_yaxes(title_font_size=10)
         fig.update_layout(
             title='Features scatter plot matrix',
             template='seaborn',
-            title_font_size=20
+            title_font_size=20,
+            height=1500
         )
     except Exception as err:
         print("Error: " + str(err))
