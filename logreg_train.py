@@ -15,6 +15,33 @@ def accuracy_score_(features, houses, weights):
     return sum(final_prediction == houses) / len(houses)
 
 
+def update_fig_axes_names(fig):
+    fig.update_xaxes(title_text="Total marks", row=1, col=1)
+    fig.update_yaxes(title_text="House", row=1, col=1)
+    fig.update_xaxes(title_text="Total marks", row=1, col=2)
+    fig.update_yaxes(title_text="Sigmoid", row=1, col=2)
+    fig.update_xaxes(title_text="Iterations", row=2, col=1)
+    fig.update_yaxes(title_text="Cost", row=2, col=1)
+    fig.update_xaxes(title_text="Feature", row=2, col=2)
+    fig.update_yaxes(title_text="Weight value", row=2, col=2)
+    fig.update_layout(template="seaborn",
+                      title_text="Logistic Regression", title_font_size=25)
+
+
+def append_classification_coordinates(data):
+    x, y, a, b = ([] for i in range(4))
+    for i in range(0, len(data)):
+        if data[i] == 0:
+            a.append(i)
+        else:
+            x.append(i)
+        if data[i] == 0:
+            b.append(data[i])
+        else:
+            y.append(data[i])
+    return [x, y, a, b]
+
+
 def append_coordinates(data):
     x = []
     y = []
@@ -24,18 +51,7 @@ def append_coordinates(data):
     return [x, y]
 
 
-def update_fig_axes_names(fig):
-    fig.update_xaxes(title_text="Iterations", row=1, col=1)
-    fig.update_yaxes(title_text="Cost", row=1, col=1)
-    fig.update_xaxes(title_text="Iterations", row=1, col=2)
-    fig.update_yaxes(title_text="Sigmoid", row=1, col=2)
-    fig.update_xaxes(title_text="Iterations", row=2, col=1)
-    fig.update_yaxes(title_text="Weights", row=2, col=1)
-    fig.update_layout(template="seaborn",
-                      title_text="Logistic Regression", title_font_size=25)
-
-
-def add_subplots(fig, house, cost, h, weights):
+def add_subplots(fig, house, cost, h, weights, unique):
     if house == "Gryffindor":
         color = "red"
     if house == "Slytherin":
@@ -47,12 +63,17 @@ def add_subplots(fig, house, cost, h, weights):
     costxy = append_coordinates(cost)
     sigmoidxy = append_coordinates(h)
     weightsxy = append_coordinates(weights)
-    fig.add_trace(go.Scatter(x=costxy[0], y=costxy[1], mode='lines',
-                             name=house, line=dict(color=color)), row=1, col=1)
+    uniquexy = append_classification_coordinates(unique)
+    fig.add_trace(go.Scatter(x=uniquexy[0], y=uniquexy[1], mode='markers',
+                             name=house, marker_color=color), row=1, col=1)
+    fig.add_trace(go.Scatter(x=uniquexy[2], y=uniquexy[3], mode='markers',
+                             name=house, marker_color=color), row=1, col=1)
     fig.add_trace(go.Scatter(x=sigmoidxy[0], y=sigmoidxy[1], mode='markers',
                              name=house, marker_color=color), row=1, col=2)
+    fig.add_trace(go.Scatter(x=costxy[0], y=costxy[1], mode='lines',
+                             name=house, line=dict(color=color)), row=2, col=1)
     fig.add_trace(go.Scatter(x=weightsxy[0], y=weightsxy[1], mode='markers',
-                             name=house, marker_color=color), row=2, col=1)
+                             name=house, marker_color=color), row=2, col=2)
 
 
 def cost_(X, h, nb_rows, unique):
@@ -74,7 +95,7 @@ def fit_gradient_descent(X, houses):
     X = np.insert(X, 0, 1, axis=1)
     nb_rows, nb_features = X.shape
     fig = make_subplots(rows=2, cols=2, subplot_titles=(
-        'Accuracy', 'Total repartition', 'Weight repartition'))
+        'Classification one vs rest', 'Total repartition', 'Accuracy', 'Weight repartition'))
     for house in np.unique(houses):
         cost = []
         unique = np.where(houses == house, 1, 0)
@@ -85,7 +106,7 @@ def fit_gradient_descent(X, houses):
             dw = np.dot(X.T, (h - unique)) / unique.size
             weights -= learning_rate * dw
         predictions.append((weights, house))
-        add_subplots(fig, house, cost, h, weights)
+        add_subplots(fig, house, cost, h, weights, unique)
     update_fig_axes_names(fig)
     np.save('weights', predictions)
     fig.show()
