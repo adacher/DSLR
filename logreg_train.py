@@ -2,7 +2,7 @@ import sys
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-import matplotlib.pyplot as plt
+from plotly.subplots import make_subplots
 
 
 def accuracy_score_(features, houses, weights):
@@ -15,8 +15,44 @@ def accuracy_score_(features, houses, weights):
     return sum(final_prediction == houses) / len(houses)
 
 
-def _sigmoid(x):
-    return 1 / (1 + np.exp(-x))
+def append_coordinates(data):
+    x = []
+    y = []
+    for i in range(0, len(data)):
+        x.append(i)
+        y.append(data[i])
+    return [x, y]
+
+
+def update_fig_axes_names(fig):
+    fig.update_xaxes(title_text="Iterations", row=1, col=1)
+    fig.update_yaxes(title_text="Cost", row=1, col=1)
+    fig.update_xaxes(title_text="Iterations", row=1, col=2)
+    fig.update_yaxes(title_text="Sigmoid", row=1, col=2)
+    fig.update_xaxes(title_text="Iterations", row=2, col=1)
+    fig.update_yaxes(title_text="Weights", row=2, col=1)
+    fig.update_layout(template="seaborn",
+                      title_text="Logistic Regression", title_font_size=25)
+
+
+def add_subplots(fig, house, cost, h, weights):
+    if house == "Gryffindor":
+        color = "red"
+    if house == "Slytherin":
+        color = "green"
+    if house == "Ravenclaw":
+        color = "blue"
+    if house == "Hufflepuff":
+        color = "yellow"
+    costxy = append_coordinates(cost)
+    sigmoidxy = append_coordinates(h)
+    weightsxy = append_coordinates(weights)
+    fig.add_trace(go.Scatter(x=costxy[0], y=costxy[1], mode='lines',
+                             name=house, line=dict(color=color)), row=1, col=1)
+    fig.add_trace(go.Scatter(x=sigmoidxy[0], y=sigmoidxy[1], mode='markers',
+                             name=house, marker_color=color), row=1, col=2)
+    fig.add_trace(go.Scatter(x=weightsxy[0], y=weightsxy[1], mode='markers',
+                             name=house, marker_color=color), row=2, col=1)
 
 
 def cost_(X, h, nb_rows, unique):
@@ -27,26 +63,32 @@ def cost_(X, h, nb_rows, unique):
     return cost
 
 
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+
 def fit_gradient_descent(X, houses):
+    predictions = []
+    iterations = 10000
     learning_rate = 0.01
-    iterations = 30000
     X = np.insert(X, 0, 1, axis=1)
     nb_rows, nb_features = X.shape
-    predictions = []
+    fig = make_subplots(rows=2, cols=2, subplot_titles=(
+        'Accuracy', 'Total repartition', 'Weight repartition'))
     for house in np.unique(houses):
         cost = []
         unique = np.where(houses == house, 1, 0)
         weights = np.zeros(nb_features)
         for _ in range(0, iterations):
-            h = _sigmoid(np.dot(X, weights))
+            h = sigmoid(np.dot(X, weights))
             cost.append(cost_(X, h, nb_rows, unique))
             dw = np.dot(X.T, (h - unique)) / unique.size
             weights -= learning_rate * dw
         predictions.append((weights, house))
-        plt.plot(cost, label=house)
-    plt.legend()
-    plt.show()
+        add_subplots(fig, house, cost, h, weights)
+    update_fig_axes_names(fig)
     np.save('weights', predictions)
+    fig.show()
     return predictions
 
 
