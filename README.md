@@ -5,6 +5,8 @@ Requires python3, numpy, pandas and plotly modules.
 
 pip install plotly or python3 -m pip install plotly.
 
+The data used to learn is in Resources/
+
 Run:
 
 python3 describe.py resources/dataset_train.csv (Display information about all features)
