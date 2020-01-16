@@ -5,7 +5,7 @@ Requires python3, numpy, pandas and plotly modules.
 
 pip install plotly or python3 -m pip install plotly.
 
-The data used to learn is in Resources/
+The data used to learn is in resources/
 
 Run:
 
