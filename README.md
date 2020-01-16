@@ -14,3 +14,7 @@ python3 histogram.py resources/dataset_train.csv (Display a histogram of each fe
 python3 scatter_plot.py resources/dataset_train.csv (Display a scatter plot of the two most similar features)
 
 python3 pair_plot.py resources/dataset_train.csv (Display a scatter plot matrix of the features that will be used)
+
+python3 logreg_train.py resources/dataset_train.csv (Export logistic regression weights in weights.npy)
+
+python3 logreg_predict.py resources/dataset_test.csv weights.npy (Export logistic regression prediction in houses.csv)
