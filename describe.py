@@ -113,13 +113,13 @@ def get_csv_data():
     nb_arg = len(sys.argv)
     if nb_arg != 2:
         print("Error: provide a csv file to test.")
-        exit(1)
+        sys.exit(1)
     try:
         data = pd.read_csv(sys.argv[1])
         return data
     except Exception as err:
         print("Error: " + str(err))
-        exit(1)
+        sys.exit(1)
 
 
 def main():
@@ -128,9 +128,9 @@ def main():
         features = get_information(data)
     except Exception:
         print("Error: data missing in csv file.")
-        return 1
+        sys.exit(1)
     display(features[0], features[1:])
-    return 0
+    sys.exit(0)
 
 
 if __name__ == "__main__":

@@ -37,7 +37,7 @@ def display(data, color, names):
         )
     except Exception as err:
         print("Error: " + str(err))
-        exit(1)
+        sys.exit(1)
     fig.show()
 
 
@@ -57,7 +57,7 @@ def get_colors(data):
                 continue
     except KeyError as err:
         print('Error: Hogwarts House not in dataset.')
-        exit(1)
+        sys.exit(1)
     return colors
 
 
@@ -88,13 +88,13 @@ def get_csv_data():
     nb_arg = len(sys.argv)
     if nb_arg != 2:
         print('Error: provide a csv file to test.')
-        exit(1)
+        sys.exit(1)
     try:
         data = pd.read_csv(sys.argv[1])
         return data
     except Exception as err:
         print('Error: ' + str(err))
-        exit(1)
+        sys.exit(1)
 
 
 def main():
@@ -103,13 +103,13 @@ def main():
         data = get_numeric_features(data)
     except KeyError:
         print("Error: data missing in csv file.")
-        return 1
+        sys.exit(1)
     names = del_homogeneous_features(data)
     color = get_colors(data)
     data = data[names]
     data = data.dropna()
     display(data, color, names)
-    return 0
+    sys.exit(0)
 
 
 if __name__ == "__main__":

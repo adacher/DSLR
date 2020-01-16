@@ -34,7 +34,7 @@ def get_house_marks(data, feature):
         columns = data[['Hogwarts House', feature]]
     except KeyError as err:
         print("Error: " + str(err))
-        exit(1)
+        sys.exit(1)
     slyth, gryff, huffl, raven = ([] for i in range(4))
     for index, row in columns.iterrows():
         try:
@@ -53,7 +53,7 @@ def get_house_marks(data, feature):
                 continue
         except TypeError as err:
             print("Error: " + str(err))
-            exit(1)
+            sys.exit(1)
 
     return [slyth, gryff, huffl, raven]
 
@@ -91,20 +91,20 @@ def get_csv_data():
     nb_arg = len(sys.argv)
     if nb_arg != 2:
         print("Error: provide a csv file to test.")
-        exit(1)
+        sys.exit(1)
     try:
         data = pd.read_csv(sys.argv[1])
         return data
     except Exception as err:
         print("Error: " + str(err))
-        exit(1)
+        sys.exit(1)
 
 
 def main():
     data = get_csv_data()
     data = get_numeric_features(data)
     display_histograms(data)
-    return 0
+    sys.exit(0)
 
 
 if __name__ == "__main__":

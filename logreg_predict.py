@@ -1,7 +1,24 @@
 import sys
+import csv
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
+from itertools import zip_longest
+
+
+def export_to_csv(predictions):
+    i = 0
+    index = []
+    header = ['Index', 'Hogwarts House']
+    for pred in predictions:
+        index.append(i)
+        i += 1
+    data = [index, predictions]
+    export_data = zip_longest(*data, fillvalue='')
+    with open('houses.csv', 'w') as f:
+        csv_writer = csv.writer(f)
+        csv_writer.writerow(header)
+        csv_writer.writerows(export_data)
 
 
 def get_predictions(features, weights):
@@ -38,13 +55,13 @@ def get_csv_data():
     nb_arg = len(sys.argv)
     if nb_arg != 3:
         print("Error: provide csv file and weights.")
-        exit(1)
+        sys.exit(1)
     try:
         data = pd.read_csv(sys.argv[1])
         return data
     except Exception as err:
         print("Error: " + str(err))
-        exit(1)
+        sys.exit(1)
 
 
 def get_weights():
@@ -53,7 +70,7 @@ def get_weights():
         return weights
     except:
         print("Error: couldn't load weights")
-        exit(1)
+        sys.exit(1)
 
 
 def main():
@@ -65,9 +82,8 @@ def main():
     np.apply_along_axis(scaling, 0, features)
     weights = get_weights()
     predictions = get_predictions(features, weights)
-    pd.DataFrame(predictions, columns=['Hogwarts House']).to_csv(
-        "predictions.csv")
-    return 0
+    export_to_csv(predictions)
+    sys.exit(0)
 
 
 if __name__ == "__main__":

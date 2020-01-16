@@ -137,13 +137,13 @@ def get_csv_data():
     nb_arg = len(sys.argv)
     if nb_arg != 2:
         print("Error: provide a csv file to test.")
-        exit(1)
+        sys.exit(1)
     try:
         data = pd.read_csv(sys.argv[1])
         return data
     except Exception as err:
         print("Error: " + str(err))
-        exit(1)
+        sys.exit(1)
 
 
 def main():
@@ -157,7 +157,7 @@ def main():
     acc = accuracy_score_(features, house_name, weights)
     print("Weights succesfully saved in weights.npy")
     print("accuracy score is : " + str(acc))
-    return 0
+    sys.exit(0)
 
 
 if __name__ == "__main__":
